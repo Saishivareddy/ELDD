@@ -30,7 +30,7 @@ int main()
 		switch(option)
 		{
 			case 1:
-				printf("Enter the string to write into driver\n");
+				printf("Enter the string to write into driver :");
 				scanf("%s", write_buff);
 				printf("Data Writing....");
 				write(fd, write_buff, strlen(write_buff)+1);
