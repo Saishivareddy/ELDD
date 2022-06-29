@@ -146,3 +146,106 @@ b – Block Device
 -m <permissions> – optional argument that sets the permission bits of the new device file to permissions
 ```
 
+### copy_from_user()
+
+- This function is used to Copy a block of data from user space (Copy data from user space to kernel space).
+
+**`unsigned long copy_from_user(void \*to, const void __user \*from, unsigned long  n);`**
+
+**Arguments**
+
+**`to`** – Destination address, in the kernel space
+
+**`from`** – The source address in the user space
+
+**`n`** – Number of bytes to copy
+
+**Returns number of bytes that could not be copied. On success, this will be zero.**
+
+### copy_to_user()
+
+- This function is used to Copy a block of data into userspace (Copy data from kernel space to user space).
+
+**`unsigned long copy_to_user(const void __user \*to, const void \*from, unsigned long  n);`**
+
+**Arguments**
+
+**`to`** – Destination address, in the user space
+
+**`from`** – The source address in the kernel space
+
+**`n`** – Number of bytes to copy
+
+**Returns number of bytes that could not be copied. On success, this will be zero.**
+
+## Open()
+
+This function is called first, whenever we are opening the device file. In  this function, I am going to allocate the memory using `kmalloc`. In the userspace application, you can use **`open()`** system call to open the device file.
+
+```c
+static int my_open(struct inode *inode, struct file *file)
+{
+​        /*Creating Physical memory*/
+​        if((kernel_buffer = kmalloc(mem_size , GFP_KERNEL)) == 0){
+​            printk(KERN_INFO "Cannot allocate memory in kernel\n");
+​            return -1;
+​        }
+​        printk(KERN_INFO "Device File Opened...!!!\n");
+​        return 0;
+}
+```
+
+## write()
+
+When writing the data to the device file it will call this write function.  Here I will copy the data from user space to kernel space using **`copy_from_user()`** function. In the userspace application, you can use **`write()`** system call to write any data the device file.
+
+```c
+static ssize_t my_write(struct file *filp, const char __user *buf, size_t len, loff_t *off)
+{
+​        copy_from_user(kernel_buffer, buf, len);
+​        printk(KERN_INFO "Data Write : Done!\n");
+​        return len;
+}
+```
+
+## read()
+
+When we read the device file it will call this function. In this function, I used **`copy_to_user()`**. This function is used to copy the data to the userspace application. In the userspace application, you can use **read()** system call to read the data from the device file.
+
+```c
+static ssize_t my_read(struct file *filp, char __user *buf, size_t len, loff_t *off)
+{
+​        copy_to_user(buf, kernel_buffer, mem_size);
+​        printk(KERN_INFO "Data Read : Done!\n");
+​        return mem_size;
+}
+```
+
+## close()
+
+When we close the device file that will call this function. Here I will free the memory that is allocated by **`kmalloc`** using **`kfree()`**. In the userspace application, you can use **`close()`** system call to close the device file.
+
+```c
+static int my_release(struct inode *inode, struct file *file)
+{
+​        kfree(kernel_buffer);
+​        printk(KERN_INFO "Device File Closed...!!!\n");
+​        return 0;
+}
+```
+
+## IOCTL
+
+IOCTL is referred to as Input and Output Control, which is used to talking to device drivers. This system call, available in most driver categories. The major use of this is in case of handling some specific operations of a device for which the kernel does not have a system call by default.
+
+- Some real-time applications of ioctl are Ejecting the media from a “cd”  drive, change the Baud Rate of Serial port, Adjust the Volume, Reading  or Writing device registers, etc.
+
+#### Steps involved in IOCTL
+
+There are some steps involved to use IOCTL.
+
+- Create IOCTL command in driver
+- Write IOCTL function in the driver
+- Create IOCTL command in a Userspace application
+- Use the IOCTL system call in a Userspace
+
