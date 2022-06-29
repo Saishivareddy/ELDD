@@ -18,8 +18,6 @@ MODULE_DESCRIPTION("Module to a demo of IOCTL");
 
 dev_t dev = 0;
 static struct cdev my_dev;
-uint8_t *kernel_buffer;
-
 
 static int __init char_driver_init(void);
 static void __exit char_driver_exit(void);
@@ -98,19 +96,11 @@ static int __init char_driver_init(void)
 		pr_err("\n Error in adding device \n");
 		return -1;
 	}
-	if((kernel_buffer = kmalloc(mem_size, GFP_KERNEL) )== 0)
-	{
-		pr_err("\n Error in allocating memory in kernel\n");
-		return -1;
-	}
-	strcpy(kernel_buffer, "Hello World");
-	pr_info("\n Driver Inserted Successfully\n");
 	return 0;
 }
 
 static void __exit char_driver_exit(void)
 {
-	kfree(kernel_buffer);
 	cdev_del(&my_dev);
 	unregister_chrdev_region(dev, 1);
 	pr_info("\n Driver Removed Successfully\n");
