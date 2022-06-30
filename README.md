@@ -130,19 +130,12 @@
 - Creating a Device file Manually
 ```bash
 mknod -m <permissions> <name> <device type> <major> <minor>
-
 <name> – your device file name that should have a full path (/dev/name)
-
 <device type> – Put c or b
-
 c – Character Device
-
 b – Block Device
-
 <major> – major number of your driver
-
 <minor> – minor number of your driver
-
 -m <permissions> – optional argument that sets the permission bits of the new device file to permissions
 ```
 
@@ -248,4 +241,46 @@ There are some steps involved to use IOCTL.
 - Write IOCTL function in the driver
 - Create IOCTL command in a Userspace application
 - Use the IOCTL system call in a Userspace
+
+
+
+## Waitqueue in Linux
+
+## Introduction
+
+When you write a Linux Driver or Module or Kernel Program, Some processes  should wait or sleep for some event. There are several ways of handling  sleeping and waking up in Linux, each suited to different needs.  Waitqueue also one of the methods to handle that case.
+
+Whenever a process must wait for an event (such as the arrival of data or the  termination of a process), it should go to sleep. Sleeping causes the  process to suspend execution, freeing the processor for other uses.  After some time, the process will be woken up and will continue with its job when the event which we are waiting for has arrived.
+
+Wait queue is a mechanism provided in the kernel to implement the wait. As  the name itself suggests, waitqueue is the list of processes waiting for an event. In other words, A wait queue is used to wait for someone to  wake you up when a certain condition is true. They must be used  carefully to ensure there is no race condition.
+
+There are 3 important steps in Waitqueue.
+
+1. Initializing Waitqueue
+2. Queuing (Put the Task to sleep until the event comes)
+3. Waking Up Queued Task
+
+## Initializing Waitqueue
+
+Use this Header file for Waitqueue (**`include /linux/wait.h`**). There are two ways to initialize the waitqueue.
+
+1. Static method
+2. Dynamic method
+
+You can use any one of the methods.
+
+### Static Method
+
+```c
+DECLARE_WAIT_QUEUE_HEAD(wq);
+```
+
+Where the “wq” is the name of the queue on which task will be put to sleep.
+
+### Dynamic Method
+
+```c
+wait_queue_head_t wq;
+init_waitqueue_head (&wq);
+```
 
