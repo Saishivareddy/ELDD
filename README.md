@@ -3,7 +3,9 @@
 ## Linux Architecture
 - Linux is primarily divided into User Space & Kernel Space. These two components interact through a System Call Interface – which is a predefined and matured interface to Linux Kernel for Userspace applications. The below image will give you a basic understanding.
 
-  ![https://embetronicx.com/wp-content/uploads/2017/08/kernel-space-vs-user-space.png](https://embetronicx.com/wp-content/uploads/2017/08/kernel-space-vs-user-space.png)
+  <img src="https://embetronicx.com/wp-content/uploads/2017/08/kernel-space-vs-user-space.png" alt="https://embetronicx.com/wp-content/uploads/2017/08/kernel-space-vs-user-space.png" style="zoom:50%;" />
+
+  
 
   ### Kernel Space
 
@@ -20,7 +22,7 @@
   - Kernel modules are pieces of code that can be loaded and unloaded into  the kernel upon demand. They extend the functionality of the kernel  without the need to reboot the system.
 
   - Custom codes can be added to Linux kernels via two methods.
-
+  
     - The basic way is to add the code to the kernel source tree and recompile the kernel. --> ***In-tree Kernel Module*** 
     - A more efficient way is to do this is by adding code to the kernel while  it is running. This process is called loading the module, where the  module refers to the code that we want to add to the kernel.  --> ***Out of tree Kernel Module***
 
@@ -97,7 +99,7 @@
     
 
   ### Types
-
+  
   - Character Driver
   - Block Driver
   - Network Driver
@@ -109,21 +111,21 @@
   
 
   ### Character Device
-
+  
   - A char file is a hardware file that reads/writes data in character by character fashion. 
   - Some classic examples are keyboard, mouse, serial printer.
 
   ### Block Device
-
+  
   - A block file is a hardware file that reads/writes data in blocks instead of character by character.
   - This type of file is very much useful when we want to write/read data in a bulk fashion. 
   - Examples : HDD, USB, and CDROM's are block devices.
 
   ### Network Device
-
+  
   - A network device is, so far as Linux’s network subsystem is concerned, an entity that sends and receives packets of data. 
   - Examples : Ethernet, Wi-Fi, Bluetooth
-
+  
   ## First Linux Device Driver
   
   ## Module Information
@@ -392,7 +394,7 @@ Another macro is also available to export the symbols like **`EXPORT_SYMBOL`**. 
 
 ## How Applications will communicate with Hardware devices?
 
-![](https://embetronicx.com/wp-content/uploads/2017/08/character-device-driver-communication.png?ezimgfmt=ng:webp/ngcb266)
+<img src="https://embetronicx.com/wp-content/uploads/2017/08/character-device-driver-communication.png?ezimgfmt=ng:webp/ngcb266" style="zoom: 75%;" />
 
 - Initially, the Application will open the device file. This device file is created by the device driver).
 - Then this device file will find the corresponding device driver using major and minor numbers.
@@ -1253,6 +1255,8 @@ int mutex_is_locked(struct mutex \*lock);
 Semaphore as used in an operating system to restrict the access to  resources by multiple processes at the same time. When a semaphore is  used to restrict the access to only one process at a time, it is termed  as mutex, as it serves the purpose of mutual exclusion. 
  The part of the program which accesses the shared resource is called as  the critical section. Hence a semaphore restricts the execution of the  critical section by multiple processes at the same time. 
 
+<img src="https://2.bp.blogspot.com/-2_7c4Hamjck/Ud_MOPa8FnI/AAAAAAAABJA/UryGG1v6O98/s640/semaphore.gif" style="zoom:50%;" />
+
 Semaphore initialization: 
 
 Dynamic-
@@ -1274,5 +1278,513 @@ Various kinds of down() :
  **down_interruptible():** Will keep waiting for the semaphore  unless it does not become available but can be interrupted. This is  always preferable over down(). 
  **down_trylock() :** Will not put the process to sleep if semaphore is already being held, but returns immediately with non zero return value. 
 
+```c
+void down(struct semaphore *sem);
+void up(struct semaphore *sem);
+int  down_interruptible(struct semaphore *sem);
+int  down_killable(struct semaphore *sem);
+int  down_trylock(struct semaphore *sem);
+int  down_timeout(struct semaphore *sem, long jiffies);
+```
 
+| API                                            | Work                               |
+| ---------------------------------------------- | ---------------------------------- |
+| void sema_init(struct semaphore *sem, int val) | Dynamically initialize a Semaphore |
+| void down(struct semaphore *sem);              | Acquire a Semaphore                |
+| void up(struct semaphore *sem);                | Release a Semaphore                |
+
+## Spinlocks
+
+The `spinlock` is a low-level synchronization mechanism which in simple words, represents a variable which can be in two states:
+
+- `acquired`;
+- `released`.
+
+```c
+void spin_lock(spinlock_t *lock);
+```
+
+Note that all spinlock waits are, by their nature, uninterruptible. Once you call spin_lock, you will spin until the lock becomes available.
+
+To release a lock that you have obtained, pass it to:
+
+```c
+void spin_unlock(spinlock_t *lock);
+```
+
+| Function            | Description                                                  |
+| ------------------- | ------------------------------------------------------------ |
+| spin lock init( )   | Set the spin lock to 1 (unlocked)                            |
+| spin lock( )        | Cycle until spin lock becomes 1 (unlocked), then set it to 0 (locked) |
+| spin unlock( )      | Set the spin lock to 1 (unlocked)                            |
+| spin unlock wait( ) | Wait until the spin lock becomes 1 (unlocked)                |
+| spin is locked( )   | Return 0 if the spin lock is set to 1 (unlocked); 0 otherwise |
+| spin trylock( )     | Set the spin lock to 0 (locked), and return 1 if the lock is obtained; 0 otherwise |
+
+## Completion
+
+**Completion**, the name itself says. When we want to notify or wake up some thread or  something when we finished some work, then we can use completion.
+
+There are 5 important steps in Completions.
+
+1. Initializing Completion in Linux
+2. Re-Initializing Completion in Linux
+3. Waiting for completion (The code is waiting and sleeping for something to finish)
+4. Waking Up Task (Sending a signal to sleeping part)
+5. Check the status
+
+### Initialize Completion
+
+We have to include **`<linux/completion.h>`** and creating a variable of type **`struct completion`,**which has only two fields:
+
+```c
+struct completion { 
+    unsigned int done; 
+    wait_queue_head_t wait; 
+};
+```
+
+Where, 
+
+**`wait`** is the waitqueue to place tasks on for waiting (if any).
+
+**`done`** is the completion flag for indicating whether it’s completed or not.
+
+We can create the struct variable in two ways.
+
+1. Static Method
+2. Dynamic Method
+
+You can use any one of the methods.
+
+#### Static Method
+
+```c
+DECLARE_COMPLETION(data_read_done);
+```
+
+Where the “**`data_read_done`**” is the name of the struct which is going to create statically.
+
+#### Dynamic Method
+
+```c
+init_completion (struct completion \* x);
+```
+
+Where, **`x`** – completion structure that is to be initialized.
+
+**Example:**
+
+```c
+struct completion data_read_done;
+init_completion(&data_read_done);
+```
+
+### Re-Initializing Completion
+
+```c
+reinit_completion (struct completion \* x);
+```
+
+Where, **`x`** – completion structure that is to be reinitialized
+
+Example :
+
+```c
+reinit_completion(&data_read_done);
+```
+
+### Waiting for completion
+
+For a thread to wait for some concurrent activity to finish, it calls anyone of the function based on the use case.
+
+#### wait_for_completion
+
+This is used to make the function waits for the completion of a task.
+
+```c
+void wait_for_completion (struct completion \* x);
+```
+
+Where, **`x`** – holds the state of this particular completion
+
+This waits to be signaled for completion of a specific task. It is NOT interruptible and there is no timeout.
+
+**Example:**
+
+```c
+wait_for_completion (&data_read_done);
+```
+
+Note that **`wait_for_completion()`** is calling **`spin_lock_irq()/spin_unlock_irq()`**, so it can only be called safely when you know that interrupts are  enabled. Calling it from IRQs-off atomic contexts will result in  hard-to-detect spurious enabling of interrupts.
+
+#### **wait_for_completion_timeout**
+
+This is used to make the function waits for the completion of a task with a  timeout. Timeouts are preferably calculated with msecs_to_jiffies() or  usecs_to_jiffies(), to make the code largely HZ-invariant.
+
+```c
+unsigned long wait_for_completion_timeout (struct completion \* x, unsigned long timeout);
+```
+
+where,**`x`** – holds the state of this particular completion
+
+**`timeout`** – timeout value in jiffies
+
+This waits for either completion of a specific task to be signaled or for a  specified timeout to expire. The timeout is in jiffies. It is not  interruptible.
+
+It **returns** **0** if timed out, and **positive** (at least 1, or the number of jiffies left till timeout) if completed.
+
+**Example:**
+
+```c
+wait_for_completion_timeout (&data_read_done);
+```
+
+#### **wait_for_completion_interruptible**
+
+This waits for the completion of a specific task to be signaled. It is interruptible.
+
+```c
+int wait_for_completion_interruptible (struct completion \* x);
+```
+
+where, **`x`** – holds the state of this particular completion
+
+It return **-ERESTARTSYS** if interrupted, **0** if completed.
+
+#### **wait_for_completion_interruptible_timeout**
+
+This waits for either completion of a specific task to be signaled or for a  specified timeout to expire. It is interruptible. The timeout is in  jiffies. Timeouts are preferably calculated with msecs_to_jiffies() or  usecs_to_jiffies(), to make the code largely HZ-invariant.
+
+```c
+long wait_for_completion_interruptible_timeout (struct completion \* x, unsigned long timeout);
+```
+
+where, **`x`** – holds the state of this particular completion
+
+**`timeout`** – timeout value in jiffies
+
+It returns **-ERESTARTSYS** if interrupted, **0** if timed out, positive (at least 1, or a number of jiffies left till timeout) if completed.
+
+#### **wait_for_completion_killable**
+
+This waits to be signaled for completion of a specific task. It can be interrupted by a kill signal.
+
+```c
+int wait_for_completion_killable (struct completion \* x);
+```
+
+where, **`x`** – holds the state of this particular completion
+
+It returns **-ERESTARTSYS** if interrupted, **0** if completed.
+
+#### **wait_for_completion_killable_timeout**
+
+This waits for either completion of a specific task to be signaled or for a  specified timeout to expire. It can be interrupted by a kill signal. The timeout is in jiffies. Timeouts are preferably calculated with  msecs_to_jiffies() or usecs_to_jiffies(), to make the code largely  HZ-invariant.
+
+```c
+long wait_for_completion_killable_timeout (struct completion \* x, unsigned long timeout);
+```
+
+where, **`x`** – holds the state of this particular completion
+
+**`timeout`** – timeout value in jiffies
+
+It returns **-ERESTARTSYS** if interrupted, **0** if timed out, positive (at least 1, or a number of jiffies left till timeout) if completed.
+
+#### **try_wait_for_completion**
+
+This function will not put the thread on the wait queue but rather returns  false if it would need to en queue (block) the thread, else it consumes  one posted completion and returns true.
+
+```c
+bool try_wait_for_completion (struct completion \* x);
+```
+
+where,**` x`** – holds the state of this particular completion
+
+It returns **0** if completion is not available **1** if a got it succeeded.
+
+This **`try_wait_for_completion()`** is safe to be called in IRQ or atomic context.
+
+### Waking Up Task
+
+#### **complete**
+
+This will wake up a single thread waiting on this completion. Threads will  be awakened in the same order in which they were queued.
+
+```c
+void complete (struct completion \* x);
+```
+
+where, **`x`** – holds the state of this particular completion
+
+**Example:**
+
+```c
+complete(&data_read_done);
+```
+
+#### **complete_all**
+
+This will wake up all threads waiting on this particular completion event.
+
+```c
+void complete_all (struct completion \* x);
+```
+
+where, **`x`** – holds the state of this particular completion
+
+### Check the status
+
+#### **completion_done**
+
+This is the test to see if completion has any waiters.
+
+```c
+bool completion_done (struct completion \* x);
+```
+
+where, **`x`** – holds the state of this particular completion
+
+It returns 0 if there are waiters (**`wait_for_completion`** in progress) **1** if there are no waiters.
+
+This **`completion_done()`** is safe to be called in IRQ or atomic context.
+
+## Timer
+
+### Introduction
+
+*What is a timer in general?* According to [Wikipedia](https://en.wikipedia.org/wiki/Timer), A timer is a specialized type of clock used for measuring specific time intervals. Timers can be categorized into two main types. A timer that  counts upwards from zero for measuring elapsed time is often called a  stopwatch, while a device that counts down from a specified time  interval is more usually called a timer.
+
+## Timer in Linux Kernel
+
+In Linux, the kernel keeps track of the flow of time by means of timer  interrupts. These timer interrupts are generated at regular timer  intervals by using the system’s timing hardware. Every time a timer  interrupt occurs, the value of an internal kernel counter is  incremented. The counter is initialized to 0 at the system boot, so it  represents the number of clock ticks since the last boot.
+
+## Uses of Kernel Timers
+
+- Polling a device by checking its state at regular intervals when the hardware can’t fire interrupts.
+- The user wants to send some messages to another device at regular intervals.
+- Send an error when some action didn’t happen in a particular time period.
+- Etc.
+
+## Kernel Timer API
+
+Linux Kernel provides the driver to create timers that are not periodic by default, register the timers and delete the timers.
+
+We need to include the **`<linux/timer.h>`** (**`#include <linux/timer.h>`**) in order to use kernel timers. Kernel timers are described by the timer_list structure, defined in **`<linux/timer.h>`**:
+
+```c
+struct timer_list {
+    /* ... */
+    unsigned long expires;
+    void (*function)(unsigned long);
+    unsigned long data;
+};
+```
+
+The **`expires`** field contains the expiration time of the timer (in jiffies).
+On expiration, **`function()`** will be called with the given **`data`** value.
+
+### Initialize / Setup Kernel Timer
+
+There are multiple ways to Initialize / Setup Kernel Timer. We’ll see one by one.
+
+#### init_timer
+
+```c
+void fastcall init_timer ( struct timer_list \* timer);
+```
+
+This function is used to initialize the timer. **`init_timer`** must be done to a timer prior to calling any of the other timer functions.  If you are using this function to initialize the timer, then you need to set the callback **`function`** and **`data`** of the **`timer_list`** structure manually.
+
+**Argument:**
+
+**`timer`** – the timer to be initialized
+
+#### setup_timer
+
+```c
+void setup_timer(timer, function, data);
+```
+
+Instead of initializing the timer manually by calling **`init_timer`**, you can use this function to set **`data`** and **`function`** of **`timer_list`** structure and initialize the timer. *This is recommended to use*. This API will be available for the older kernel version. If you are  using the newer kernel, then you have to use the below API (**`timer_setup`**).
+
+**Argument:**
+
+**`timer`** – the timer to be initialized
+
+**`function`** – Callback function to be called when the timer expires. In this callback function, the argument will be **`unsigned long`**.
+
+**`data`** – data has to be given to the callback function
+
+##### Example
+
+```c
+/* setup your timer to call my_timer_callback */
+setup_timer(&my_timer, timer_callback, 0);
+//Timer Callback function. This will be called when timer expires
+void timer_callback(unsigned long data)
+{
+
+}
+```
+
+#### timer_setup
+
+If you use a newer kernel version, then setup_timer won’t work. So you need to use this **`timer_setup`** function.
+
+```c
+void timer_setup(timer, function, data);
+```
+
+Instead of initializing the timer manually by calling **`init_timer`**, you can use this function to set **`data`** and **`function`** of **`timer_list`** structure and initialize the timer. *This is recommended to use*.
+
+**Argument:**
+
+**`timer`** – the timer to be initialized
+
+**`function`** – Callback function to be called when the timer expires. In this callback function, the argument will be **`struct timer_list \*`**.
+
+**`data`** – data has to be given to the callback function
+
+##### Example
+
+```c
+/* setup your timer to call my_timer_callback */
+timer_setup(&my_timer, timer_callback, 0);
+//Timer Callback function. This will be called when timer expires
+void timer_callback(struct timer_list * data)
+{
+}
+```
+
+#### DEFINE_TIMER
+
+```c
+DEFINE_TIMER(_name, _function, _expires, _data)
+```
+
+If we are using this method, then no need to create the **`timer_list`** structure on our side. The kernel will create the structure in the name of **`_name`** and initialize it.
+
+**Argument:**
+
+**`_name`** – name of the timer_list structure to be created
+
+**`_function`** – Callback function to be called when the timer expires
+
+**`_expires`** – the expiration time of the timer (in jiffies)
+
+**`_data`** – data has to be given to the callback function
+
+### Start a Kernel Timer
+
+#### add_timer
+
+```c
+void add_timer(struct timer_list \*timer);
+```
+
+This will start a timer.
+
+**Argument:**
+
+**`timer`** – the timer needs to be started
+
+### Modifying Kernel Timer’s timeout
+
+#### mod_timer
+
+```c
+int mod_timer(struct timer_list \* timer, unsigned long expires);
+```
+
+This function is used to modify a timer’s timeout. This is a more efficient way to update the **`expires`** field of an active timer (if the timer is inactive it will be activated).
+
+**`mod_timer(timer, expires)`** is equivalent to:
+
+**`del_timer(timer);`**
+
+**`timer->expires = expires;`**
+
+**`add_timer(timer);`**
+
+**Argument:**
+
+**`timer`** – the timer needs to modify the timer period
+
+**`expires`** – the updated expiration time of the timer (in jiffies)
+
+**Return:**
+
+The function returns whether it has modified a pending timer or not.
+
+0 – **`mod_timer`** of an inactive timer
+
+1 – **`mod_timer`** of an active timer
+
+### Stop a Kernel Timer
+
+The below functions will be used to deactivate the kernel timers.
+
+#### del_timer
+
+```c
+int del_timer(struct timer_list \* timer);
+```
+
+This will deactivate a timer. This works on both active and inactive timers.
+
+**`timer`** – the timer needs to be deactivated
+
+**Return:**
+
+The function returns whether it has deactivated a pending timer or not.
+
+0 – **`del_timer`** of an inactive timer
+
+1 – **`del_timer`** of an active timer
+
+#### del_timer_sync
+
+```c
+int del_timer_sync(struct timer_list \* timer);
+```
+
+This will deactivate a timer and wait for the handler to finish. This works on both active and inactive timers.
+
+**Argument:**
+
+**`timer`** – the timer needs to be deactivated
+
+**Return:**
+
+The function returns whether it has deactivated a pending timer or not.
+
+0 – **`del_timer_syncof`** an inactive timer
+
+1 – **`del_timer_sync`** of an active timer
+
+**Note:** *callers must prevent restarting of the timer, otherwise this function is  meaningless. It must not be called from interrupt contexts. The caller  must not hold locks that would prevent the completion of the timer’s  handler. The timer’s handler must not call add_timer_on. Upon exit, the  timer is not queued and the handler is not running on any CPU.*
+
+### Check Kernel Timer status
+
+#### timer_pending
+
+```c
+int timer_pending(const struct timer_list \* timer);
+```
+
+This will tell whether a given timer is currently pending, or not. Callers  must ensure serialization wrt. other operations done to this timer, eg.  interrupt contexts or other CPUs on SMP.
+
+**Argument:**
+
+**`timer`** – the timer needs to check the status
+
+**Return:**
+
+The function returns whether the timer is pending or not.
+
+0 – **`timer`** is not pending
+
+1 – **`timer`** is pending
 
