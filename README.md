@@ -44,7 +44,7 @@
 
     
 
-  ### File Sysytem Drivers
+  ### File System Drivers
 
   - A filesystem driver interprets the contents of a filesystem (which is  typically the contents of a disk drive) as files and directories and  such. There are lots of different ways of storing files and directories  and such on disk drives, on network servers, and in other ways. For each way, you need a filesystem driver. For example, there’s a filesystem  driver for the ext2 filesystem type used almost universally on Linux  disk drives. There is one for the MS-DOS filesystem too, and one for  NFS
 
@@ -52,7 +52,11 @@
 
   ### System calls
 
-  - Userspace programs use system calls to get services from the kernel. For example, there are system calls to read a file, to create a new process, and to  shut down the system. Most system calls are integral to the system and  very standard, so are always built into the base kernel (no LKM option).
+  - Userspace programs use system calls to get services from the kernel. 
+
+  - For example, there are system calls to read a file, to create a new process, and to  shut down the system. 
+
+  - Most system calls are integral to the system and  very standard, so are always built into the base kernel (no LKM option).
 
     
 
@@ -95,11 +99,11 @@
   - Device drivers are operating system-specific and  hardware-dependent. 
 
   - A device driver acts as a translator between the  hardware device and the programs or operating systems that use it.
-
-    
-
-  ### Types
   
+    
+  
+  ### Types
+
   - Character Driver
   - Block Driver
   - Network Driver
@@ -107,20 +111,20 @@
   
 
   ***In Linux, everything is a file. It means Linux treats everything as a File even hardware.***
-
   
-
+  
+  
   ### Character Device
   
   - A char file is a hardware file that reads/writes data in character by character fashion. 
   - Some classic examples are keyboard, mouse, serial printer.
-
-  ### Block Device
   
+  ### Block Device
+
   - A block file is a hardware file that reads/writes data in blocks instead of character by character.
   - This type of file is very much useful when we want to write/read data in a bulk fashion. 
   - Examples : HDD, USB, and CDROM's are block devices.
-
+  
   ### Network Device
   
   - A network device is, so far as Linux’s network subsystem is concerned, an entity that sends and receives packets of data. 
@@ -154,9 +158,9 @@
   
   - Using this Macro we can mention that who is writing this Linux device driver or module. 
   
-    ```c
-    MODULE_AUTHOR("Saishiva Reddy Gatla");
-    ```
+  ```c
+  MODULE_AUTHOR("Saishiva Reddy Gatla");
+  ```
   
   ## Module Description
   
