@@ -45,7 +45,7 @@ static int char_release(struct inode *inode, struct file *file)
 static ssize_t char_read(struct file *file, char __user *buff, size_t len, loff_t *off)
 {
     printk(KERN_INFO "Driver Read function Called....!\n");
-    copy_to_user((char*)buff, &result, sizeof(result));
+    int ret = copy_to_user((char*)buff, &result, sizeof(result));
     printk(KERN_INFO"Output is %d\n", result);
     return len;
 }
@@ -54,7 +54,7 @@ static ssize_t char_write(struct file *file, const char __user *buff, size_t len
 {
     int kbuff[3];
     printk(KERN_INFO "Driver Write function called....!\n");
-    copy_from_user((int *)kbuff, (int *)buff, sizeof(kbuff));
+    int ret = copy_from_user((int *)kbuff, (int *)buff, sizeof(kbuff));
     // printk("%d %d %d", kbuff[0], kbuff[1], kbuff[2]);
     if(kbuff[2] == 1)
     {
@@ -77,17 +77,19 @@ static ssize_t char_write(struct file *file, const char __user *buff, size_t len
 
 static int __init calculator_init(void)
 {
-    alloc_chrdev_region(&dev,0,4,"MyDriver");
+    alloc_chrdev_region(&dev,0,1,"MyDriver");
     printk(KERN_INFO "Major Number = %d\nMinor Number = %d",MAJOR(dev), MINOR(dev));
     my_cdev = cdev_alloc();
     my_cdev->ops = &fops;
-    cdev_add(my_cdev,dev,4);
+    cdev_add(my_cdev,dev,1);
     printk(KERN_INFO "Driver Inserted Successfully\n");
     return 0;
 }
 
 static void __exit calculator_exit(void)
 {
+    cdev_del(my_cdev);
+    unregister_chrdev_region(dev, 1);
     printk(KERN_INFO "Driver removed Successfully\n");
 }
 
