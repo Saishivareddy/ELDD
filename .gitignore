@@ -60,7 +60,7 @@ dkms.conf
 !.vscode/launch.json
 !.vscode/extensions.json
 !.vscode/*.code-snippets
-
+*.vscode-ctags
 # Local History for Visual Studio Code
 .history/
 
