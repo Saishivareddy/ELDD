@@ -19,12 +19,12 @@
 
   ## Linux Kernel Modules
 
-  - Kernel modules are pieces of code that can be loaded and unloaded into  the kernel upon demand. They extend the functionality of the kernel  without the need to reboot the system.
+  - Kernel modules are pieces of code that can be loaded and unloaded into the kernel upon demand. They extend the functionality of the kernel without the need to reboot the system. 
 
   - Custom codes can be added to Linux kernels via two methods.
   
     - The basic way is to add the code to the kernel source tree and recompile the kernel. --> ***In-tree Kernel Module*** 
-    - A more efficient way is to do this is by adding code to the kernel while  it is running. This process is called loading the module, where the  module refers to the code that we want to add to the kernel.  --> ***Out of tree Kernel Module***
+    - A more efficient way is to do this is by adding code to the kernel while it is running. This process is called loading the module, where the module refers to the code that we want to add to the kernel.  --> ***Out of tree Kernel Module***
 
   - Since we are loading these codes at runtime and they are not part of the official Linux kernel, these are called **Loadable Kernel Modules (LKM)**.
 
@@ -40,13 +40,17 @@
 
   ### LInux Device Drivers
 
-  - A device driver is designed for a specific piece of hardware. The kernel uses it to communicate with that piece of hardware without having to  know any details of how the hardware works.
+  - A device driver is designed for a specific piece of hardware. The kernel uses it to communicate with that piece of hardware without having to know any details of how the hardware works.
 
     
 
   ### File System Drivers
 
-  - A filesystem driver interprets the contents of a filesystem (which is  typically the contents of a disk drive) as files and directories and  such. There are lots of different ways of storing files and directories  and such on disk drives, on network servers, and in other ways. For each way, you need a filesystem driver. For example, there’s a filesystem  driver for the ext2 filesystem type used almost universally on Linux  disk drives. There is one for the MS-DOS filesystem too, and one for  NFS
+  - A filesystem driver interprets the contents of a filesystem (which is  typically the contents of a disk drive) as files and directories and such. 
+
+  - There are lots of different ways of storing files and directories and such on disk drives, on network servers, and in other ways. For each way, you need a filesystem driver. 
+
+  - For example, there’s a filesystem  driver for the ext2 filesystem type used almost universally on Linux  disk drives. There is one for the MS-DOS filesystem too, and one for  NFS
 
     
 
@@ -54,7 +58,7 @@
 
   - Userspace programs use system calls to get services from the kernel. 
 
-  - For example, there are system calls to read a file, to create a new process, and to  shut down the system. 
+  - For example, there are system calls to read a file, to create a new process, and to shut down the system. 
 
   - Most system calls are integral to the system and  very standard, so are always built into the base kernel (no LKM option).
 
@@ -64,13 +68,13 @@
 
   - One major advantage they have is that we don’t need to keep rebuilding the  kernel every time we add a new device or if we upgrade an old device.  This saves time and also helps in keeping our base kernel error-free.
 
-  - LKMs are very flexible, in the sense that they can be loaded and unloaded  with a single line of command. This helps in saving memory as we load  the LKM only when we need them.
+  - LKMs are very flexible, in the sense that they can be loaded and unloaded with a single line of command. This helps in saving memory as we load  the LKM only when we need them.
 
     
 
   ### Differences Between Kernel Modules and User Programs
 
-  - **Kernel modules have separate address spaces.** A module runs in kernel space. An application runs in userspace. The  system software is protected from user programs. Kernel space and user space have their own memory address spaces.
+  - **Kernel modules have separate address spaces.** A module runs in kernel space. An application runs in userspace. The system software is protected from user programs. Kernel space and user space have their own memory address spaces.
 
   - **Kernel modules have higher execution privileges.** Code that runs in kernel space has greater privilege than code that runs in userspace.
 
@@ -84,7 +88,7 @@
 
   - A kernel module is a bit of compiled code that can be inserted into the kernel at run-time, such as with `insmod` or `modprobe`.
 
-  - A driver is a bit of code that runs in the kernel to talk to some hardware device. It “drives” the hardware. Almost every bit of hardware  in your computer has an associated driver.
+  - A driver is a bit of code that runs in the kernel to talk to some hardware device. It “drives” the hardware. Almost every bit of hardware in your computer has an associated driver.
 
     
 
@@ -95,11 +99,11 @@
   - Without the required device driver, the corresponding hardware device fails to work.
 
   - A device driver usually communicates with the hardware by means of the communications subsystem or computer bus to which the hardware is  connected. 
-
-  - Device drivers are operating system-specific and  hardware-dependent. 
-
-  - A device driver acts as a translator between the  hardware device and the programs or operating systems that use it.
   
+  - Device drivers are operating system-specific and  hardware-dependent. 
+  
+  - A device driver acts as a translator between the  hardware device and the programs or operating systems that use it.
+
     
   
   ### Types
@@ -107,9 +111,9 @@
   - Character Driver
   - Block Driver
   - Network Driver
-
   
-
+  
+  
   ***In Linux, everything is a file. It means Linux treats everything as a File even hardware.***
   
   
@@ -120,7 +124,7 @@
   - Some classic examples are keyboard, mouse, serial printer.
   
   ### Block Device
-
+  
   - A block file is a hardware file that reads/writes data in blocks instead of character by character.
   - This type of file is very much useful when we want to write/read data in a bulk fashion. 
   - Examples : HDD, USB, and CDROM's are block devices.
@@ -188,7 +192,7 @@
   
   ### Exit function
   
-  This is the function that will execute last when the Linux device driver is  unloaded from the kernel. For example, when we unload the driver using **`rmmod`**, this function will execute. Please see below to know the syntax of this function.
+  This is the function that will execute last when the Linux device driver is unloaded from the kernel. For example, when we unload the driver using **`rmmod`**, this function will execute. Please see below to know the syntax of this function.
   
   ```c
   void __exit hello_world_exit(void)
@@ -202,9 +206,9 @@
   
   ## Printk()
   
-  In C programming, we will print the values  using **`printf()`** function. **`printf()`** is a user-space function. So we cant use this here. So, they have created another function for the kernel which is **`printk().`**
+  In C programming, we will print the values using **`printf()`** function. **`printf()`** is a user-space function. So we cant use this here. So, they have created another function for the kernel which is **`printk().`**
   
-  One of the differences is that **`printk `** lets you classify messages according to their severity by associating  different log levels, or priorities, with the messages. You usually  indicate the log level with a macro. I will explain about the macros  now. There are several macros used for **`printk`**.
+  One of the differences is that **`printk `** lets you classify messages according to their severity by associating different log levels, or priorities, with the messages. You usually  indicate the log level with a macro. There are several macros used for **`printk`**.
   
   **KERN_EMERG:**
   
@@ -268,15 +272,15 @@
   MODULE_AUTHOR("Saishiva Reddy");
   MODULE_DESCRIPTION("Module to print Hello World");
   
-  static int hello_init(void)
+  static int __init hello_init(void)
   {
-      printk(KERN_ALERT "\n Hello, World\n");
+      printk(KERN_INFO "\n Hello, World\n");
       return 0;
   }
   
-  static void hello_exit(void)
+  static void __exit hello_exit(void)
   {
-      printk(KERN_ALERT "\n Goodbye, World\n");
+      printk(KERN_INFO"\n Goodbye, World\n");
   }
   
   module_init(hello_init);
@@ -305,7 +309,7 @@
   ```bash
   obj-m := Hello.o
   # Cross Compilation
-  KERNELDIR = /lib/modules//5.15.48-Shiva-v7l+/build
+  KERNELDIR = /lib/modules/5.15.48-Shiva-v7l+/build
   default :
   	make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- -C $(KERNELDIR) M=$(PWD) modules
   clean :
@@ -359,7 +363,7 @@
   
   ------
   
-  ## Corss Compiler & Kernel Environment for rpi4
+  ## Cross Compiler & Kernel Environment for rpi4
   
   ### **Steps for cross compiling Kernel :**
   
@@ -432,7 +436,7 @@
        - Example in my PC :
   
          ```bash
-         make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf INSTALL_MOD_PATH=/media/vishu/rootfs modules_install
+         make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf-INSTALL_MOD_PATH=/media/cdac/rootfs modules_install
          ```
   
        - Modules get install in **rootfs/lib/modules** path.
@@ -448,7 +452,7 @@
          config.txt :
   
          ```bash
-         vim config.txt
+         sudo vim config.txt
          ```
   
        - Add below line at the end of the file and save file.
@@ -475,33 +479,39 @@
   
   For example, our module file name is hello_world_module.ko
   
-  **`sudo insmod hello_world_module.ko`**
+  ```bash
+  sudo insmod hello_world_module.ko
+  ```
   
-  **`lsmod`** used to see the modules were inserted. In the below image, I’ve shown the prints in the init function. Use **`dmesg`** to see the kernel prints.
+  **`lsmod`** used to see the modules were inserted. 
+  
+  Use **`dmesg`** to see the kernel prints.
   
   So, when I load the module, it executes the init function.
   
   ### Listing the Modules
   
-  In order to see the list of currently loaded modules, use the **`lsmod `**command. In the above image, you can see that I have used **`lsmod`** command.
+  In order to see the list of currently loaded modules, use the **`lsmod `**command. 
   
   ### Unloading
   
   To un-load, a Kernel module, use the **`rmmod `**command with root privileges.
   
-  In our case,
-  
-  **`sudo rmmod hello_world_module.ko`** or **`sudo rmmod hello_world_module`**
+  ```bash
+  sudo rmmod hello_world_module.ko or sudo rmmod hello_world_module
+  ```
   
   So, when I unload the module, it executes the exit function.
   
   ### Getting Module Details
   
-  In order to get information about a Module (author, supported options), we may use the **`modinfo`** command.
+  In order to get information about a Module (author, supported options), use the **`modinfo`** command.
   
   For example
   
-  **`modinfo hello_world_module.ko`**
+  ```bash
+  modinfo hello_world_module.ko
+  ```
   
   ## Module Parameters
   
@@ -524,6 +534,8 @@
   ```
   
   This will create a sysfs entry. (**`/sys/module/hello_world_module/parameters/value`**
+  
+  
 
 ## EXPORT_SYMBOL in Linux Device Driver
 
@@ -542,7 +554,7 @@ Another macro is also available to export the symbols like **`EXPORT_SYMBOL`**. 
 
 - Declare and define the symbol (functions or variables) which you want to make  it visible to other kernel modules. Then below the definition, use **`EXPORT_SYMBOL(symbol name)`**. Now it is visible to all loadable modules.
 - Now take the kernel driver who is gonna use the above-exported symbol. Declare the symbol using **`extern`**. Then use the symbol directly.
-- Finally, load the module first, who has the definition of the export symbol. Then load the caller module using **`insmod`**“.
+- Finally, load the module first, who has the definition of the export symbol. Then load the caller module using **`insmod`**.
 
 ### Limitation
 
@@ -567,7 +579,7 @@ Traditionally, the major number identifies the driver associated with the device
 
 ### Minor Number
 
-The major number is to identify the corresponding driver. Many devices may  use the same major number. So we need to assign the number to each  device which is using the same major number. So, this is a minor number. In other words, The device driver uses the minor number  **<minor>** to distinguish individual physical or logical devices.
+The major number is to identify the corresponding driver. Many devices may use the same major number. So we need to assign the number to each  device which is using the same major number. So, this is a minor number. In other words, The device driver uses the minor number  **<minor>** to distinguish individual physical or logical devices.
 
 ### Allocating Major and Minor Number
 
@@ -608,7 +620,7 @@ register_chrdev_region(dev, 1, "My_dev");
 
 ### Dynamically Allocating
 
-* If we don’t want the fixed major and minor numbers please use this  method. This method will allocate the major number dynamically to your  driver which is available.
+* If we don’t want the fixed major and minor numbers please use this  method. This method will allocate the major number dynamically to your driver which is available.
 
 ```c
 int alloc_chrdev_region(dev_t *dev, unsigned int firstminor, unsigned int count, char *name);
@@ -636,14 +648,14 @@ void unregister_chrdev_region(dev_t first, unsigned int count);
 
 ### Creating Device File
 
-We can create a dive file in two ways.
+We can create a device file in two ways.
 
 1. Manually
 2. Automatically
 
 ### Manually Creating Device File
 
-```c
+```bash
 mknod -m <permissions> <name> <device type> <major> <minor>
 ```
 
@@ -659,12 +671,12 @@ b – Block Device
 
 <***`minor`***> – minor number of your driver
 
--m <**`permissions`**> *–* optional argument that sets the permission bits of the new device file to *permissions*
+-m <**`permissions`**> *–* optional argument that sets the permission bits of the new device file to *permissions*.
 
 Example:
 
 ```c
-sudo mknod -m 666 /dev/etx_device c 246 0
+sudo mknod -m 666 /dev/My_device c 246 0
 ```
 
 #### Advantages
@@ -700,17 +712,17 @@ void class_destroy (struct class \* cls);
 struct device *device_create (struct *class, struct device *parent, dev_t dev, void * drvdata, const char *fmt, ...);
 ```
 
-**`class `***–* pointer to the struct class that this device should be registered to
+**`class `**		  – pointer to the struct class that this device should be registered to
 
-**`parent `***–* pointer to the parent struct device of this new device, if any
+**`parent`**		– pointer to the parent struct device of this new device, if any
 
-**`devt `***–* the dev_t for the char device to be added
+**`devt `**			– the dev_t for the char device to be added
 
-**`drvdata`** – the data to be added to the device for callbacks
+**`drvdata`** 	– the data to be added to the device for callbacks
 
-**`fmt `***–* string for the device’s name
+**`fmt `**		   	– string for the device’s name
 
-***`...`** –* variable arguments
+**`...`** 			  – variable arguments
 
 **Note,** you can destroy the device using **`device_destroy()`**.
 
@@ -733,7 +745,7 @@ struct cdev {
 
 This is **`cdev`** structure. Here we need to fill the two fields,
 
-1. **`file_operation`** (This we will see after this cdev structure)
+1. **`file_operations`** (This we will see after this cdev structure)
 2. **`owner`** (This should be **`THIS_MODULE`**)
 
 There are two ways of allocating and initializing one of these structures.
@@ -745,23 +757,23 @@ struct cdev *my_cdev = cdev_alloc( );
 my_cdev->ops = &my_fops;
 ```
 
-2. Own allocation
+​	2. Own allocation
 
-   ```c
-   void cdev_init(struct cdev *cdev, struct file_operations *fops);
-   ```
+```c
+void cdev_init(struct cdev *cdev, struct file_operations *fops);
+```
 
-Once the **`cdev `**structure is set up with file_operations and owner, the final step is to tell the kernel about it with a call to:
+Once the **`cdev `** structure is set up with file_operations and owner, the final step is to tell the kernel about it with a call to:
 
 ```c
 int cdev_add(struct cdev *dev, dev_t num, unsigned int count);
 ```
 
-**`dev `**is the **`cdev`** structure,
+**`dev `** is the **`cdev`** structure,
 
-**`num `**is the first device number to which this device responds, and
+**`num `** is the first device number to which this device responds, and
 
-**`count `**is the number of device numbers that should be associated with the device.
+**`count `** is the number of device numbers that should be associated with the device.
 
 To remove a char device from the system, call:
 
@@ -818,7 +830,7 @@ static struct file_operations fops =
 };
 ```
 
-## Functions used in this driver
+## Functions used in driver
 
 - kmalloc()
 - kfree()
@@ -839,6 +851,8 @@ void *kmalloc(size_t size, gfp_t flags);
 ***`size`**–* how many bytes of memory are required.
 
 **`flags`**– the type of memory to allocate.
+
+***GFP = Get Free pages***
 
 The *`flags`* argument may be one of:
 
@@ -888,7 +902,7 @@ void kfree(const void \*objp)
 
 ### copy_from_user()
 
-- This function is used to Copy a block of data from user space (Copy data from user space to kerThat symbol should not be static or inline.nel space).
+- This function is used to Copy a block of data from user space (Copy data from user space to kernel space). 
 
 ```c
 unsigned long copy_from_user(void \*to, const void __user \*from, unsigned long  n);
@@ -924,7 +938,7 @@ unsigned long copy_to_user(const void __user \*to, const void \*from, unsigned l
 
 ## Open()
 
-This function is called first, whenever we are opening the device file. In  this function, I am going to allocate the memory using `kmalloc`. In the userspace application, you can use **`open()`** system call to open the device file.
+This function is called first, whenever we are opening the device file. In this function, I am going to allocate the memory using `kmalloc`. In the userspace application, you can use **`open()`** system call to open the device file.
 
 ```c
 static int my_open(struct inode *inode, struct file *file)
@@ -999,7 +1013,7 @@ To implement a new ioctl command we need to follow the following steps.
 
 1. Define the ioctl command
 
-```bash
+```c
 #define "ioctl name" __IOX("magic number","command number","argument type")
 ```
 
@@ -1033,9 +1047,9 @@ int  ioctl(struct inode *inode,struct file *file,unsigned int cmd,unsigned long 
 Where
 
 <**`inode`**> : is the inode number of the file being worked on.
-<**`file`**>  : is the file pointer to the file that was passed by the application.
-<**`cmd`**>   : is the ioctl command that was called from the userspace.
-<**`arg`**>   : are the arguments passed from the userspace
+<**`file`**>   : is the file pointer to the file that was passed by the application.
+<**`cmd`**>     : is the ioctl command that was called from the userspace.
+<**`arg`**>     : are the arguments passed from the userspace
 
 Within the function “ioctl” we need to implement all the commands that we defined above (**`WR_VALUE`**, **`RD_VALUE`**). We need to use the same commands in the **`switch`** statement which is defined above.
 
@@ -1056,9 +1070,9 @@ long ioctl( "file descriptor","ioctl command","Arguments");
 
 Where,
 
-<**`file descriptor`**>: This the open file on which the ioctl command needs to be executed, which would generally be device files.
-<**`ioctl command`**>: ioctl command which is implemented to achieve the desired functionality
-<**`arguments`**>: The arguments need to be passed to the ioctl command.
+<**`file descriptor`**>: This is the open file on which the ioctl command needs to be executed, which would generally be device files.
+<**`ioctl command`**>	: ioctl command which is implemented to achieve the desired functionality
+<**`arguments`**>			: The arguments need to be passed to the ioctl command.
 
 #### **Example**
 
@@ -1101,7 +1115,7 @@ There are 3 important steps in Waitqueue.
 
 ## Initializing Waitqueue
 
-Use this Header file for Waitqueue (**`include /linux/wait.h`**). There are two ways to initialize the waitqueue.
+Use this Header file for Waitqueue (**`include <linux/wait.h>`**). There are two ways to initialize the waitqueue.
 
 1. Static method
 2. Dynamic method
@@ -1125,7 +1139,7 @@ init_waitqueue_head (&wq);
 
 ## Queuing
 
-Once the wait queue is declared and initialized, a process may use it to go  to sleep. There are several macros are available for different uses. We  will see each one by one.
+Once the wait queue is declared and initialized, a process may use it to go to sleep. There are several macros are available for different uses. 
 
 1. **wait_event**
 2. **wait_event_timeout**
@@ -1136,13 +1150,13 @@ Once the wait queue is declared and initialized, a process may use it to go  to 
 
 Old kernel versions used the functions **`sleep_on()`** and **`interruptible_sleep_on()`**, but those two functions can introduce bad race conditions and should not be used.
 
-Whenever we use the above one of the macro, it will add that task to the  waitqueue which is created by us. Then it will wait for the event.
+Whenever we use the above one of the macro, it will add that task to the waitqueue which is created by us. Then it will wait for the event.
 
 ### 1. wait_event
 
 sleep until a condition gets true.
 
-```bash
+```c
 wait_event(wq, condition);
 
 wq – the waitqueue to wait on
@@ -1153,7 +1167,7 @@ condition – a C expression for the event to wait for
 
 sleep until a condition gets true or a timeout elapses
 
-```bash
+```c
 wait_event_timeout(wq, condition, timeout);
 
 wq – the waitqueue to wait on
@@ -1165,7 +1179,7 @@ timeout – timeout, in jiffies
 
 sleep until a condition gets true
 
-```bash
+```c
 wait_event_cmd(wq, condition, cmd1, cmd2);
 
 wq – the waitqueue to wait on
@@ -1178,7 +1192,7 @@ cmd2 – the command will be executed after sleep
 
 sleep until a condition gets true
 
-```bash
+```c
 wait_event_interruptible(wq, condition);
 
 wq – the waitqueue to wait on
@@ -1189,7 +1203,7 @@ condtion – a C expression for the event to wait for
 
 sleep until a condition gets true or a timeout elapses
 
-```bash
+```c
 wait_event_interruptible_timeout(wq, condition, timeout);
 
 wq– the waitqueue to wait on
@@ -1201,7 +1215,7 @@ timeout – timeout, in jiffies
 
 sleep until a condition gets true
 
-```bash
+```c
 wait_event_killable(wq, condition);
 
 wq – the waitqueue to wait on
@@ -1221,7 +1235,7 @@ When some Tasks are in sleep mode because of the waitqueue, then we can use the 
 
 wakes up only one process from the wait queue which is in non-interruptible sleep.
 
-```bash
+```c
 wake_up(&wq);
 
 wq – the waitqueue to wake up
@@ -1231,7 +1245,7 @@ wq – the waitqueue to wake up
 
 wakes up all the processes on the wait queue
 
-```bash
+```c
 wake_up_all(&wq);
 
 wq – the waitqueue to wake up
@@ -1241,7 +1255,7 @@ wq – the waitqueue to wake up
 
 wakes up only one process from the wait queue that is in interruptible sleep
 
-```bash
+```c
 wake_up_interruptible(&wq);
 
 wq– the waitqueue to wake up
@@ -1249,19 +1263,19 @@ wq– the waitqueue to wake up
 
 ### 4. wake_up_sync and wake_up_interruptible_sync
 
-```bash
+```c
 wake_up_sync(&wq);
 
 wake_up_interruptible_sync(&wq);
 ```
 
- 
+
 
 ## Kernel Synchronization
 
 ## Race Condition
 
-A race condition occurs when two or more threads can access shared data  and they try to change it at the same time. Because the thread scheduling algorithm can swap between threads at any time, we don’t know the order in which the threads will attempt to access the shared data.  Therefore, the result of the change in data is dependent on the thread  scheduling algorithm, i.e. both threads are “racing” to access/change  the data.
+A race condition occurs when two or more threads can access shared data and they try to change it at the same time. Because the thread scheduling algorithm can swap between threads at any time, we don’t know the order in which the threads will attempt to access the shared data. Therefore, the result of the change in data is dependent on the thread  scheduling algorithm, i.e. both threads are “racing” to access/change  the data.
 
 To avoid race conditions, we have many ways like Semaphore, Spinlock, and Mutex. 
 
@@ -1277,8 +1291,6 @@ A mutex has ownership. The thread which locks a Mutex must also unlock it.
 
 So whenever you are accessing a shared resource that time first we lock the mutex and then access the shared resource. When we are finished with that shared resource then we unlock the Mutex.
 
-I hope you got some idea about Mutex. Now, let us look at Mutex in the Linux Kernel.
-
 ## Mutex in Linux Kernel
 
 Today most major operating systems employ multitasking. Multitasking is where multiple threads can execute in parallel and thereby utilizing the CPU  in an optimum way. Even though, multitasking is useful, if not implemented cautiously can lead to concurrency issues (Race condition), which can be very difficult to handle.
@@ -1293,7 +1305,7 @@ struct mutex {
 };
 ```
 
-We will be using this structure for Mutex in Linux kernel. Refer to `Linux/include/linux/mutex.h`
+We will be using this structure for Mutex in Linux kernel. Refer to `linux/include/linux/mutex.h`
 
 ### Initializing Mutex
 
@@ -1310,11 +1322,11 @@ This method will be useful while using global Mutex. This macro is defined below
 DEFINE_MUTEX(name);
 ```
 
-This call *defines* and *initializes* a mutex. Refer to **`Linux/include/linux/mutex.h`**
+This call *defines* and *initializes* a mutex. Refer to **`linux/include/linux/mutex.h`**
 
 #### Dynamic Method
 
-This method will be useful  for per-object mutexes when the mutex is just a  field in a heap-allocated object. This macro is defined below.
+This method will be useful for per-object mutexes when the mutex is just a field in a heap-allocated object. This macro is defined below.
 
 ```c
 mutex_init(struct mutex \*lock);
@@ -1331,13 +1343,13 @@ It is not allowed to initialize an already locked mutex.
 ##### Example
 
 ```c
-struct mutex etx_mutex; 
-mutex_init(&etx_mutex);
+struct mutex my_mutex;
+mutex_init(&my_mutex);
 ```
 
 ### Mutex Lock
 
-Once a mutex has been initialized, it can be locked by any one of them explained below.
+Once a mutex has been initialized, it can be locked by any one of them below.
 
 #### mutex_lock
 
@@ -1367,7 +1379,7 @@ int mutex_lock_interruptible(struct mutex \*lock);
 
 #### mutex_trylock
 
-This will try to acquire the mutex, without waiting (will attempt to obtain  the lock, but will not sleep). Returns 1 if the mutex has been acquired  successfully, and 0 on contention.
+This will try to acquire the mutex, without waiting (will attempt to obtain the lock, but will not sleep). Returns 1 if the mutex has been acquired  successfully, and 0 on contention.
 
 ```c
 int mutex_trylock(struct mutex \*lock);
